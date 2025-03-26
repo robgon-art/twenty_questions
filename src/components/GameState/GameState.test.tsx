@@ -1,52 +1,80 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
-import GameState from './GameState';
+import { renderHook, act } from '@testing-library/react';
+import { useGameState } from './GameState';
 
-describe('GameState', () => {
+describe('useGameState', () => {
     const mockOnGameComplete = jest.fn();
 
     beforeEach(() => {
         mockOnGameComplete.mockClear();
     });
 
-    it('renders with initial game state', () => {
-        render(<GameState onGameComplete={mockOnGameComplete} />);
+    it('initializes with correct state', () => {
+        const { result } = renderHook(() => useGameState(mockOnGameComplete));
         
-        expect(screen.getByText('Questions asked: 0/20')).toBeInTheDocument();
-        expect(screen.queryByText('Game Over!')).not.toBeInTheDocument();
+        expect(result.current.state).toEqual({
+            questions: [],
+            currentAnswer: '',
+            gameStatus: 'active',
+            questionsRemaining: 20
+        });
     });
 
-    it('tracks questions and updates count', () => {
-        render(<GameState onGameComplete={mockOnGameComplete} />);
+    it('handles questions correctly', () => {
+        const { result } = renderHook(() => useGameState(mockOnGameComplete));
         
-        // Simulate adding a question
-        const question = "Is it an animal?";
-        const answer = "Yes";
-        
-        // Note: In a real implementation, we would need to expose these methods
-        // through props or context to test them directly
-        // For now, we'll just verify the initial state
-        
-        expect(screen.getByText('Questions asked: 0/20')).toBeInTheDocument();
+        act(() => {
+            result.current.handleQuestion('Is it an animal?');
+        });
+
+        expect(result.current.state.questions).toHaveLength(1);
+        expect(result.current.state.questions[0].text).toBe('Is it an animal?');
+        expect(result.current.state.questionsRemaining).toBe(19);
     });
 
-    it('shows game over when 20 questions are reached', () => {
-        render(<GameState onGameComplete={mockOnGameComplete} />);
+    it('handles answers correctly', () => {
+        const { result } = renderHook(() => useGameState(mockOnGameComplete));
         
-        // Note: In a real implementation, we would need to simulate adding 20 questions
-        // through props or context to test this functionality
-        // For now, we'll just verify the initial state
-        
-        expect(screen.queryByText('Game Over!')).not.toBeInTheDocument();
+        act(() => {
+            result.current.handleAnswer('Yes');
+        });
+
+        expect(result.current.state.currentAnswer).toBe('Yes');
     });
 
-    it('calls onGameComplete when game ends', () => {
-        render(<GameState onGameComplete={mockOnGameComplete} />);
+    it('completes game after 20 questions', () => {
+        const { result } = renderHook(() => useGameState(mockOnGameComplete));
         
-        // Note: In a real implementation, we would need to simulate the game ending
-        // through props or context to test this functionality
-        // For now, we'll just verify the initial state
+        // Ask 20 questions
+        for (let i = 0; i < 20; i++) {
+            act(() => {
+                result.current.handleQuestion(`Question ${i}`);
+            });
+        }
+
+        expect(result.current.state.gameStatus).toBe('complete');
+        expect(result.current.state.questionsRemaining).toBe(0);
+        expect(mockOnGameComplete).toHaveBeenCalledWith(false);
+    });
+
+    it('starts new game correctly', () => {
+        const { result } = renderHook(() => useGameState(mockOnGameComplete));
         
-        expect(mockOnGameComplete).not.toHaveBeenCalled();
+        // First ask a question
+        act(() => {
+            result.current.handleQuestion('Is it an animal?');
+        });
+
+        // Then start a new game
+        act(() => {
+            result.current.startNewGame();
+        });
+
+        expect(result.current.state).toEqual({
+            questions: [],
+            currentAnswer: '',
+            gameStatus: 'active',
+            questionsRemaining: 20
+        });
     });
 }); 

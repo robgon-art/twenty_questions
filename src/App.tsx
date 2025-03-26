@@ -1,16 +1,28 @@
 import React from 'react';
 import './App.css';
-import ChatInterface from './components/ChatInterface/ChatInterface';
+import GameInterface from './components/GameInterface/GameInterface';
+import { useGameState } from './components/GameState/GameState';
 
 function App() {
-  const handleAskQuestion = (question: string) => {
-    // TODO: Implement the logic to handle the question
-    console.log('Question asked:', question);
+  const handleGameComplete = (success: boolean) => {
+    // TODO: Handle game completion (e.g., show message, reset game)
+    console.log('Game completed:', success ? 'success' : 'failure');
   };
+
+  const {
+    state,
+    handleQuestion,
+    handleAnswer,
+    startNewGame
+  } = useGameState(handleGameComplete);
 
   return (
     <div className="App">
-      <ChatInterface onAskQuestion={handleAskQuestion} />
+      <GameInterface 
+        onAskQuestion={handleQuestion}
+        gameState={state}
+        onStartNewGame={startNewGame}
+      />
     </div>
   );
 }
