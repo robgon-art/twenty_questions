@@ -32,8 +32,7 @@ const GameComplete: React.FC<{ onStartNewGame: () => void }> = ({ onStartNewGame
 
 const QuestionItem: React.FC<{ question: GameState['questions'][0], index: number }> = ({ question, index }) => (
     <div className={styles.questionItem}>
-        <p className={styles.questionText}>{index + 1}. {question.text}</p>
-        <p className={styles.answerText}>{question.answer}</p>
+        <p className={styles.questionText}>{index + 1}. {question.text} {question.answer}</p>
     </div>
 );
 

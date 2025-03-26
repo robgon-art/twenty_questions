@@ -51,10 +51,14 @@ export const useGameController = (
             const response = await processGameQuestion(question, state.currentObject);
             
             setState(prevState => {
-                let newState = updateStateWithQuestion(question)(prevState);
+                let newState = prevState;
                 
                 if (response.success) {
+                    // First update the answer
                     newState = updateStateWithAnswer(response.answer)(newState);
+                    
+                    // Then add the question with the current answer
+                    newState = updateStateWithQuestion(question)(newState);
                     
                     // If this is the first question, update the object
                     if (response.object) {
@@ -63,6 +67,7 @@ export const useGameController = (
                 } else {
                     // Handle error case
                     newState = updateStateWithAnswer(response.answer)(newState);
+                    newState = updateStateWithQuestion(question)(newState);
                 }
                 
                 handleGameCompleteEffect(onGameComplete)(newState);
@@ -70,9 +75,9 @@ export const useGameController = (
             });
         } catch (error) {
             setState(prevState => {
-                const newState = updateStateWithAnswer(
-                    "Sorry there was an error, please ask your question again."
-                )(prevState);
+                const errorMessage = "Sorry there was an error, please ask your question again.";
+                let newState = updateStateWithAnswer(errorMessage)(prevState);
+                newState = updateStateWithQuestion(question)(newState);
                 handleGameCompleteEffect(onGameComplete)(newState);
                 return newState;
             });
