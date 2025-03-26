@@ -1,7 +1,7 @@
 import React from 'react';
 import './App.css';
-import GameInterface from './components/GameInterface/GameInterface';
-import { useGameState } from './components/GameState/GameState';
+import GameInterface from './views/game/GameInterface';
+import { useGameController } from './controllers/game/useGameController';
 
 function App() {
   const handleGameComplete = (success: boolean) => {
@@ -14,7 +14,7 @@ function App() {
     handleQuestion,
     handleAnswer,
     startNewGame
-  } = useGameState(handleGameComplete);
+  } = useGameController(handleGameComplete);
 
   return (
     <div className="App">
