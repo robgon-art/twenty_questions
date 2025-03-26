@@ -2,6 +2,9 @@
     max-width: 800px;
     margin: 0 auto;
     padding: 2rem;
+    height: 90vh;
+    display: flex;
+    flex-direction: column;
 }
 
 .title {
@@ -12,8 +15,8 @@
 
 .subtitle {
     text-align: center;
-    color: #666;
-    margin-bottom: 2rem;
+    color: #000;
+    margin-bottom: 1rem;
 }
 
 .gameInfo {
@@ -44,27 +47,40 @@
 }
 
 .questionsList {
-    margin: 2rem 0;
-    max-height: 400px;
+    flex: 1;
+    margin: 1rem 0;
     overflow-y: auto;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    padding: 1rem;
+    background-color: #f8f8f8;
+    min-height: 0; /* This is important for Firefox */
 }
 
 .questionItem {
-    padding: 1rem;
+    /* padding: 0.75rem; */
     margin-bottom: 0.5rem;
     background-color: #fff;
     border-radius: 4px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.questionItem:last-child {
+    margin-bottom: 0;
 }
 
 .questionText {
+    padding: 0.8rem;
+    font-size: 1rem;
     font-weight: 500;
     margin-bottom: 0.25rem;
-    color: #333;
+    color: #000000;
+    text-align: left;
 }
 
 .answerText {
     color: #666;
     font-size: 0.9rem;
     margin: 0;
+    text-align: left;
 }

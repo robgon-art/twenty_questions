@@ -7,9 +7,10 @@
 
 .input {
     flex: 1;
-    max-width: 500px;
+    max-width: 545px;
     padding: 0.8rem;
     font-size: 1rem;
+    font-weight: 500;
     border: none;
     border-radius: 4px;
     outline: none;

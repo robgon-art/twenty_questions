@@ -10,10 +10,10 @@ interface GameInterfaceProps {
     onStartNewGame: () => void;
 }
 
-const GameHeader: React.FC = () => (
+const GameHeader: React.FC<{ remaining: number }> = ({ remaining }) => (
     <>
         <h1 className={styles.title}>Twenty Questions</h1>
-        <p className={styles.subtitle}>See if you can guess what I am thinking of.</p>
+        <p className={styles.subtitle}>See if you can guess what I am thinking of. Remaining questions: {remaining}</p>
     </>
 );
 
@@ -30,30 +30,18 @@ const GameComplete: React.FC<{ onStartNewGame: () => void }> = ({ onStartNewGame
     </div>
 );
 
-const QuestionItem: React.FC<{ question: GameState['questions'][0] }> = ({ question }) => (
+const QuestionItem: React.FC<{ question: GameState['questions'][0], index: number }> = ({ question, index }) => (
     <div className={styles.questionItem}>
-        <p className={styles.questionText}>{question.text}</p>
+        <p className={styles.questionText}>{index + 1}. {question.text}</p>
         <p className={styles.answerText}>{question.answer}</p>
     </div>
 );
 
 const QuestionList: React.FC<{ questions: GameState['questions'] }> = ({ questions }) => (
     <div className={styles.questionsList}>
-        {questions.map((q, index) => (
-            <QuestionItem key={index} question={q} />
+        {[...questions].reverse().map((q, index) => (
+            <QuestionItem key={questions.length - 1 - index} question={q} index={questions.length - 1 - index} />
         ))}
-    </div>
-);
-
-const GameInfo: React.FC<{
-    gameState: GameState;
-    onStartNewGame: () => void;
-}> = ({ gameState, onStartNewGame }) => (
-    <div className={styles.gameInfo}>
-        <GameStatus remaining={getQuestionsRemaining(gameState)} />
-        {gameState.gameStatus === 'complete' && (
-            <GameComplete onStartNewGame={onStartNewGame} />
-        )}
     </div>
 );
 
@@ -68,9 +56,10 @@ const GameInterface: React.FC<GameInterfaceProps> = ({
 
     return (
         <div className={styles.container}>
-            <GameHeader />
-            <GameInfo gameState={gameState} onStartNewGame={onStartNewGame} />
-            <QuestionList questions={gameState.questions} />
+            <GameHeader remaining={getQuestionsRemaining(gameState)} />
+            {gameState.gameStatus === 'complete' && (
+                <GameComplete onStartNewGame={onStartNewGame} />
+            )}
             <InputField
                 onSubmit={handleSubmit}
                 placeholder="Type your question..."
@@ -78,6 +67,7 @@ const GameInterface: React.FC<GameInterfaceProps> = ({
                 buttonText="Ask Question"
                 initialValue="Is it an animal, mineral, or vegetable?"
             />
+            <QuestionList questions={gameState.questions} />
         </div>
     );
 };
