@@ -24,6 +24,7 @@ const updateGameStatus = (remaining: number): 'active' | 'complete' =>
 export const createInitialState = (rules: GameRules = DEFAULT_RULES): GameState => ({
     questions: [],
     currentAnswer: '',
+    currentObject: undefined,
     gameStatus: 'active',
     questionsRemaining: rules.maxQuestions
 });
@@ -46,6 +47,11 @@ export const addQuestion = (state: GameState, questionText: string): GameState =
 export const updateAnswer = (state: GameState, answer: string): GameState => ({
     ...state,
     currentAnswer: answer
+});
+
+export const updateObject = (state: GameState, object: string): GameState => ({
+    ...state,
+    currentObject: object
 });
 
 export const completeGame = (state: GameState, success: boolean): GameState => ({

@@ -23,7 +23,8 @@ export interface ApiError {
 console.log('OpenAI API Key available:', !!process.env.REACT_APP_OPENAI_API_KEY);
 
 const client = new OpenAI({
-    apiKey: process.env.REACT_APP_OPENAI_API_KEY
+    apiKey: process.env.REACT_APP_OPENAI_API_KEY,
+    dangerouslyAllowBrowser: true // Required for testing in browser environment
 });
 
 const handleApiError = (error: unknown): ApiError => {

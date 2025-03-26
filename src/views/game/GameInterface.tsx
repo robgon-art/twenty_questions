@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styles from './GameInterface.module.css';
 import InputField from '../shared/InputField/InputField';
 import { GameState } from '../../models/game/types';
 import { getQuestionsRemaining } from '../../models/game/rules';
 
 interface GameInterfaceProps {
-    onAskQuestion: (question: string) => void;
+    onAskQuestion: (question: string) => Promise<void>;
     gameState: GameState;
     onStartNewGame: () => void;
 }
@@ -50,8 +50,15 @@ const GameInterface: React.FC<GameInterfaceProps> = ({
     gameState,
     onStartNewGame 
 }) => {
-    const handleSubmit = (message: string) => {
-        onAskQuestion(message);
+    const [isLoading, setIsLoading] = useState(false);
+
+    const handleSubmit = async (message: string) => {
+        setIsLoading(true);
+        try {
+            await onAskQuestion(message);
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     return (
@@ -62,9 +69,9 @@ const GameInterface: React.FC<GameInterfaceProps> = ({
             )}
             <InputField
                 onSubmit={handleSubmit}
-                placeholder="Type your question..."
-                disabled={gameState.gameStatus === 'complete'}
-                buttonText="Ask Question"
+                placeholder={isLoading ? "Thinking..." : "Type your question..."}
+                disabled={gameState.gameStatus === 'complete' || isLoading}
+                buttonText={isLoading ? "Thinking..." : "Ask Question"}
                 initialValue="Is it an animal, mineral, or vegetable?"
             />
             <QuestionList questions={gameState.questions} />

@@ -8,10 +8,11 @@ import {
     resetGame
 } from '../../models/game/state';
 import { isGameComplete } from '../../models/game/rules';
+import { processGameQuestion } from '../../services/gameService';
 
 export interface GameController {
     state: GameState;
-    handleQuestion: (question: string) => void;
+    handleQuestion: (question: string) => Promise<void>;
     handleAnswer: (answer: string) => void;
     startNewGame: () => void;
 }
@@ -31,6 +32,12 @@ const updateStateWithQuestion = (question: string) =>
 const updateStateWithAnswer = (answer: string) => 
     (state: GameState): GameState => updateAnswer(state, answer);
 
+const updateStateWithObject = (object: string) =>
+    (state: GameState): GameState => ({
+        ...state,
+        currentObject: object
+    });
+
 const resetGameState = () => 
     (): GameState => resetGame();
 
@@ -39,13 +46,38 @@ export const useGameController = (
 ): GameController => {
     const [state, setState] = useState<GameState>(createInitialState());
 
-    const handleQuestion = useCallback((question: string) => {
-        setState(prevState => {
-            const newState = updateStateWithQuestion(question)(prevState);
-            handleGameCompleteEffect(onGameComplete)(newState);
-            return newState;
-        });
-    }, [onGameComplete]);
+    const handleQuestion = useCallback(async (question: string) => {
+        try {
+            const response = await processGameQuestion(question, state.currentObject);
+            
+            setState(prevState => {
+                let newState = updateStateWithQuestion(question)(prevState);
+                
+                if (response.success) {
+                    newState = updateStateWithAnswer(response.answer)(newState);
+                    
+                    // If this is the first question, update the object
+                    if (response.object) {
+                        newState = updateStateWithObject(response.object)(newState);
+                    }
+                } else {
+                    // Handle error case
+                    newState = updateStateWithAnswer(response.answer)(newState);
+                }
+                
+                handleGameCompleteEffect(onGameComplete)(newState);
+                return newState;
+            });
+        } catch (error) {
+            setState(prevState => {
+                const newState = updateStateWithAnswer(
+                    "Sorry there was an error, please ask your question again."
+                )(prevState);
+                handleGameCompleteEffect(onGameComplete)(newState);
+                return newState;
+            });
+        }
+    }, [onGameComplete, state.currentObject]);
 
     const handleAnswer = useCallback((answer: string) => {
         setState(updateStateWithAnswer(answer));
