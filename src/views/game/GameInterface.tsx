@@ -4,12 +4,17 @@ import InputField from '../shared/InputField/InputField';
 import { GameState } from '../../models/game/types';
 import { getQuestionsRemaining } from '../../models/game/rules';
 import { MAX_QUESTIONS } from '../../constants';
+import { toWords } from 'number-to-words';
 
 interface GameInterfaceProps {
     onAskQuestion: (question: string) => Promise<void>;
     gameState: GameState;
     onStartNewGame: () => void;
 }
+
+// Capitalize first letter
+const capitalize = (str: string): string => 
+    str.charAt(0).toUpperCase() + str.slice(1);
 
 const GameHeader: React.FC<{ 
     remaining: number, 
@@ -27,7 +32,7 @@ const GameHeader: React.FC<{
 
     return (
         <>
-            <h1 className={styles.title}>{MAX_QUESTIONS} Questions</h1>
+            <h1 className={styles.title}>{capitalize(toWords(MAX_QUESTIONS))} Questions</h1>
             <p className={styles.subtitle}>{subtitle}</p>
         </>
     );

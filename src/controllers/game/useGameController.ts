@@ -4,7 +4,6 @@ import {
     createInitialState,
     addQuestion,
     updateAnswer,
-    completeGame,
     resetGame
 } from '../../models/game/state';
 import { isGameComplete } from '../../models/game/rules';

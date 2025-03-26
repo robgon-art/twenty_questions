@@ -24,6 +24,7 @@ export const processGameQuestion = async (question: string, currentObject?: stri
         const response = await processMessage(prompt);
         
         if (!response.success) {
+            console.error('Error from processMessage:', response.error);
             return {
                 answer: "Sorry there was an error, please ask your question again.",
                 success: false,
@@ -58,6 +59,7 @@ export const processGameQuestion = async (question: string, currentObject?: stri
                 };
             }
         } catch (parseError) {
+            console.error('Error parsing LLM response:', parseError);
             return {
                 answer: "Sorry there was an error, please ask your question again.",
                 success: false,
@@ -66,6 +68,7 @@ export const processGameQuestion = async (question: string, currentObject?: stri
             };
         }
     } catch (error) {
+        console.error('Unexpected error in processGameQuestion:', error);
         return {
             answer: "Sorry there was an error, please ask your question again.",
             success: false,

@@ -1,4 +1,4 @@
-import { GameState, GameRules } from './types';
+import { GameState } from './types';
 
 export const isGameComplete = (state: GameState): boolean => 
     state.gameStatus === 'success' || state.gameStatus === 'failed';
