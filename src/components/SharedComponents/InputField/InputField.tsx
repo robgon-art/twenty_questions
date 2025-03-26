@@ -5,6 +5,8 @@ interface InputFieldProps {
     onSubmit: (message: string) => void;
     placeholder?: string;
     disabled?: boolean;
+    buttonText?: string;
+    initialValue?: string;
 }
 
 const isMessageValid = (message: string, disabled: boolean): boolean => 
@@ -31,8 +33,10 @@ const InputField: React.FC<InputFieldProps> = ({
     onSubmit,
     placeholder = 'Type your message...',
     disabled = false,
+    buttonText = 'Send',
+    initialValue = ''
 }) => {
-    const [message, setMessage] = useState('');
+    const [message, setMessage] = useState(initialValue);
 
     return (
         <form 
@@ -52,7 +56,7 @@ const InputField: React.FC<InputFieldProps> = ({
                 disabled={disabled || !message.trim()}
                 className={styles.submitButton}
             >
-                Send
+                {buttonText}
             </button>
         </form>
     );

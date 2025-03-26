@@ -16,39 +16,3 @@
     color: #000000;
     margin-bottom: 2rem;
 }
-
-.questionForm {
-    display: flex;
-    gap: 1rem;
-    justify-content: center;
-    align-items: center;
-}
-
-.questionInput {
-    flex: 1;
-    max-width: 500px;
-    padding: 0.8rem;
-    font-size: 1rem;
-    border: 2px solid #ddd;
-    border-radius: 4px;
-    outline: none;
-}
-
-.questionInput:focus {
-    border-color: #007bff;
-}
-
-.askButton {
-    padding: 0.8rem 1.5rem;
-    font-size: 1rem;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.2s;
-}
-
-.askButton:hover {
-    background-color: #0056b3;
-}
