@@ -3,6 +3,7 @@ import styles from './GameInterface.module.css';
 import InputField from '../shared/InputField/InputField';
 import { GameState } from '../../models/game/types';
 import { getQuestionsRemaining } from '../../models/game/rules';
+import { MAX_QUESTIONS } from '../../constants';
 
 interface GameInterfaceProps {
     onAskQuestion: (question: string) => Promise<void>;
@@ -19,14 +20,14 @@ const GameHeader: React.FC<{
     if (gameState.gameStatus === 'active') {
         subtitle = `See if you can guess what I am thinking of. Remaining questions: ${remaining}`;
     } else if (gameState.gameStatus === 'success') {
-        subtitle = `You win! You got it correct in ${20 - gameState.questionsRemaining} questions.`;
+        subtitle = `You win! 🎉 You got it correct in ${MAX_QUESTIONS - gameState.questionsRemaining} questions.`;
     } else {
-        subtitle = `You lose. The answer was ${gameState.currentObject}.`;
+        subtitle = `You lose. 😢 The answer was ${gameState.currentObject}.`;
     }
 
     return (
         <>
-            <h1 className={styles.title}>Twenty Questions</h1>
+            <h1 className={styles.title}>{MAX_QUESTIONS} Questions</h1>
             <p className={styles.subtitle}>{subtitle}</p>
         </>
     );
@@ -78,7 +79,7 @@ const GameInterface: React.FC<GameInterfaceProps> = ({
     // Determine placeholder text based on game state
     const placeholder = gameState.gameStatus === 'active'
         ? "Type your question..."
-        : "Click Play Again to start a new game";
+        : "Click Play Again to start over";
 
     return (
         <div className={styles.container}>

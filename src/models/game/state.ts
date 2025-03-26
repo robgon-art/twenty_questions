@@ -1,7 +1,8 @@
 import { GameState, Question, GameRules } from './types';
+import { MAX_QUESTIONS } from '../../constants';
 
 const DEFAULT_RULES: GameRules = {
-    maxQuestions: 20
+    maxQuestions: MAX_QUESTIONS
 };
 
 // Pure functions for state transformations

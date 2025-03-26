@@ -9,13 +9,6 @@ interface InputFieldProps {
     initialValue?: string;
 }
 
-const isMessageValid = (message: string, disabled: boolean, buttonText: string): boolean => 
-    (buttonText === 'Play Again' || Boolean(message.trim())) && !disabled;
-
-const handleInputChange = (setMessage: (value: string) => void) => 
-    (e: React.ChangeEvent<HTMLInputElement>): void => 
-        setMessage(e.target.value);
-
 const InputField: React.FC<InputFieldProps> = ({
     onSubmit,
     placeholder = 'Type your message...',
@@ -26,19 +19,39 @@ const InputField: React.FC<InputFieldProps> = ({
     const [message, setMessage] = useState(initialValue);
     const inputRef = useRef<HTMLInputElement>(null);
 
+    // Update message when initialValue changes
+    useEffect(() => {
+        if (initialValue !== undefined) {
+            setMessage(initialValue);
+        }
+    }, [initialValue]);
+
     useEffect(() => {
         inputRef.current?.focus();
     }, []);
 
     const handleFormSubmit = (e: React.FormEvent): void => {
         e.preventDefault();
-        if (isMessageValid(message, disabled, buttonText)) {
+        // If it's Play Again button, or if there's a valid message
+        if (buttonText === 'Play Again' || message.trim()) {
             onSubmit(message.trim());
-            setMessage('');
+            if (buttonText === 'Play Again') {
+                // Set the initial question when restarting
+                setMessage("Is it an animal, mineral, or vegetable?");
+            } else {
+                setMessage('');
+            }
             // Focus the input after submission
             setTimeout(() => inputRef.current?.focus(), 0);
         }
     };
+
+    // Check if the button should be enabled
+    const isButtonEnabled = !disabled && (
+        buttonText === 'Play Again' || 
+        message.trim() !== '' || 
+        (initialValue && message === initialValue)
+    );
 
     return (
         <form 
@@ -49,14 +62,14 @@ const InputField: React.FC<InputFieldProps> = ({
                 ref={inputRef}
                 type="text"
                 value={message}
-                onChange={handleInputChange(setMessage)}
+                onChange={(e) => setMessage(e.target.value)}
                 placeholder={placeholder}
                 disabled={disabled}
                 className={styles.input}
             />
             <button
                 type="submit"
-                disabled={disabled || (buttonText !== 'Play Again' && !message.trim())}
+                disabled={!isButtonEnabled}
                 className={styles.submitButton}
             >
                 {buttonText}

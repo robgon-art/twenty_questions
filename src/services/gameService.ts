@@ -1,4 +1,5 @@
 import { processMessage } from './apiService';
+import { MAX_QUESTIONS } from '../constants';
 
 export interface GameResponse {
     object?: string;
@@ -9,10 +10,10 @@ export interface GameResponse {
 }
 
 const FIRST_QUESTION_PROMPT = (question: string) => 
-    `We are playing twenty questions. Think of a common, well-known thing and answer this first question: ${question}. Return a JSON string with an "object" and "answer" strings.`;
+    `We are playing ${MAX_QUESTIONS} questions. Think of a common, well-known thing and answer this first question: ${question}. Return a JSON string with an "object" and "answer" strings.`;
 
 const FOLLOW_UP_QUESTION_PROMPT = (object: string, question: string) =>
-    `We are playing twenty questions. The object is ${object}. Answer the ${question}. Return a JSON string with an "answer" string and a "gameStatus" field that is either "ongoing" or "success" based on whether the player has correctly guessed the object.`;
+    `We are playing ${MAX_QUESTIONS} questions. The object is ${object}. Answer the ${question}. Return a JSON string with an "answer" string and a "gameStatus" field that is either "ongoing" or "success" based on whether the player has correctly guessed the object.`;
 
 export const processGameQuestion = async (question: string, currentObject?: string): Promise<GameResponse> => {
     try {

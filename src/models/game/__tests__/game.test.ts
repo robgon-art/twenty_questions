@@ -1,6 +1,7 @@
 import { GameState } from '../types';
 import { createInitialState, addQuestion, updateAnswer, updateObject, resetGame } from '../state';
 import { isGameComplete, canAskQuestion, getQuestionsRemaining, getQuestionsAsked } from '../rules';
+import { MAX_QUESTIONS } from '../../../constants';
 
 describe('Game State Management', () => {
     let initialState: GameState;
@@ -15,7 +16,7 @@ describe('Game State Management', () => {
             expect(initialState.currentAnswer).toBe('');
             expect(initialState.currentObject).toBeUndefined();
             expect(initialState.gameStatus).toBe('active');
-            expect(initialState.questionsRemaining).toBe(20);
+            expect(initialState.questionsRemaining).toBe(MAX_QUESTIONS);
         });
     });
 
@@ -25,7 +26,7 @@ describe('Game State Management', () => {
             
             expect(state.questions).toHaveLength(1);
             expect(state.questions[0].text).toBe('Is it an animal?');
-            expect(state.questionsRemaining).toBe(19);
+            expect(state.questionsRemaining).toBe(MAX_QUESTIONS - 1);
         });
 
         it('should not add questions when game is not active', () => {
@@ -75,10 +76,10 @@ describe('Game State Management', () => {
         });
 
         it('should correctly track questions remaining', () => {
-            expect(getQuestionsRemaining(initialState)).toBe(20);
+            expect(getQuestionsRemaining(initialState)).toBe(MAX_QUESTIONS);
             
             const state = addQuestion(initialState, 'Is it an animal?');
-            expect(getQuestionsRemaining(state)).toBe(19);
+            expect(getQuestionsRemaining(state)).toBe(MAX_QUESTIONS - 1);
         });
 
         it('should correctly track questions asked', () => {
@@ -97,7 +98,7 @@ describe('Game State Management', () => {
                 currentAnswer: 'Yes',
                 currentObject: 'apple',
                 gameStatus: 'success' as const,
-                questionsRemaining: 15
+                questionsRemaining: MAX_QUESTIONS - 5
             };
 
             const resetState = resetGame();
