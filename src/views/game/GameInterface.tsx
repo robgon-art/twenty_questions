@@ -10,25 +10,27 @@ interface GameInterfaceProps {
     onStartNewGame: () => void;
 }
 
-const GameHeader: React.FC<{ remaining: number }> = ({ remaining }) => (
-    <>
-        <h1 className={styles.title}>Twenty Questions</h1>
-        <p className={styles.subtitle}>See if you can guess what I am thinking of. Remaining questions: {remaining}</p>
-    </>
-);
+const GameHeader: React.FC<{ 
+    remaining: number, 
+    gameState: GameState 
+}> = ({ remaining, gameState }) => {
+    // Determine which message to show based on game state
+    let subtitle;
+    if (gameState.gameStatus === 'active') {
+        subtitle = `See if you can guess what I am thinking of. Remaining questions: ${remaining}`;
+    } else if (gameState.gameStatus === 'success') {
+        subtitle = `You win! You got it correct in ${20 - gameState.questionsRemaining} questions.`;
+    } else {
+        subtitle = `You lose. The answer was ${gameState.currentObject}.`;
+    }
 
-const GameStatus: React.FC<{ remaining: number }> = ({ remaining }) => (
-    <p>Questions remaining: {remaining}</p>
-);
-
-const GameComplete: React.FC<{ onStartNewGame: () => void }> = ({ onStartNewGame }) => (
-    <div className={styles.gameComplete}>
-        <p>Game Over!</p>
-        <button onClick={onStartNewGame} className={styles.newGameButton}>
-            Start New Game
-        </button>
-    </div>
-);
+    return (
+        <>
+            <h1 className={styles.title}>Twenty Questions</h1>
+            <p className={styles.subtitle}>{subtitle}</p>
+        </>
+    );
+};
 
 const QuestionItem: React.FC<{ question: GameState['questions'][0], index: number }> = ({ question, index }) => (
     <div className={styles.questionItem}>
@@ -52,6 +54,12 @@ const GameInterface: React.FC<GameInterfaceProps> = ({
     const [isLoading, setIsLoading] = useState(false);
 
     const handleSubmit = async (message: string) => {
+        // If game is not active, start a new game instead of asking a question
+        if (gameState.gameStatus !== 'active') {
+            onStartNewGame();
+            return;
+        }
+
         setIsLoading(true);
         try {
             await onAskQuestion(message);
@@ -60,17 +68,26 @@ const GameInterface: React.FC<GameInterfaceProps> = ({
         }
     };
 
+    // Determine button text based on game state
+    const buttonText = isLoading 
+        ? "Thinking..." 
+        : gameState.gameStatus === 'active' 
+            ? "Ask Question" 
+            : "Play Again";
+
+    // Determine placeholder text based on game state
+    const placeholder = gameState.gameStatus === 'active'
+        ? "Type your question..."
+        : "Click Play Again to start a new game";
+
     return (
         <div className={styles.container}>
-            <GameHeader remaining={getQuestionsRemaining(gameState)} />
-            {gameState.gameStatus === 'complete' && (
-                <GameComplete onStartNewGame={onStartNewGame} />
-            )}
+            <GameHeader remaining={getQuestionsRemaining(gameState)} gameState={gameState} />
             <InputField
                 onSubmit={handleSubmit}
-                placeholder={isLoading ? "Thinking..." : "Type your question..."}
-                disabled={gameState.gameStatus === 'complete' || isLoading}
-                buttonText={isLoading ? "Thinking..." : "Ask Question"}
+                placeholder={placeholder}
+                disabled={isLoading}
+                buttonText={buttonText}
                 initialValue="Is it an animal, mineral, or vegetable?"
             />
             <QuestionList questions={gameState.questions} />

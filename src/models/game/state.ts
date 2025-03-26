@@ -17,8 +17,8 @@ const shouldCompleteGame = (remaining: number): boolean => remaining <= 0;
 const updateQuestions = (questions: Question[], newQuestion: Question): Question[] => 
     [...questions, newQuestion];
 
-const updateGameStatus = (remaining: number): 'active' | 'complete' => 
-    shouldCompleteGame(remaining) ? 'complete' : 'active';
+const updateGameStatus = (remaining: number): 'active' | 'failed' => 
+    shouldCompleteGame(remaining) ? 'failed' : 'active';
 
 // Main state transformation functions
 export const createInitialState = (rules: GameRules = DEFAULT_RULES): GameState => ({
@@ -56,7 +56,7 @@ export const updateObject = (state: GameState, object: string): GameState => ({
 
 export const completeGame = (state: GameState, success: boolean): GameState => ({
     ...state,
-    gameStatus: 'complete'
+    gameStatus: success ? 'success' : 'failed'
 });
 
 export const resetGame = (rules: GameRules = DEFAULT_RULES): GameState => 

@@ -4,7 +4,7 @@ export interface Question {
     timestamp: Date;
 }
 
-export type GameStatus = 'active' | 'complete';
+export type GameStatus = 'active' | 'success' | 'failed';
 
 export interface GameState {
     questions: Question[];

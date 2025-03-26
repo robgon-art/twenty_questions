@@ -5,13 +5,14 @@ export interface GameResponse {
     answer: string;
     success: boolean;
     error?: string;
+    gameStatus: 'ongoing' | 'success';
 }
 
 const FIRST_QUESTION_PROMPT = (question: string) => 
     `We are playing twenty questions. Think of a common, well-known thing and answer this first question: ${question}. Return a JSON string with an "object" and "answer" strings.`;
 
 const FOLLOW_UP_QUESTION_PROMPT = (object: string, question: string) =>
-    `We are playing twenty questions. The object is ${object}. Answer the ${question}. Return a JSON string with an "answer" string.`;
+    `We are playing twenty questions. The object is ${object}. Answer the ${question}. Return a JSON string with an "answer" string and a "gameStatus" field that is either "ongoing" or "success" based on whether the player has correctly guessed the object.`;
 
 export const processGameQuestion = async (question: string, currentObject?: string): Promise<GameResponse> => {
     try {
@@ -25,7 +26,8 @@ export const processGameQuestion = async (question: string, currentObject?: stri
             return {
                 answer: "Sorry there was an error, please ask your question again.",
                 success: false,
-                error: response.error
+                error: response.error,
+                gameStatus: 'ongoing'
             };
         }
 
@@ -40,30 +42,34 @@ export const processGameQuestion = async (question: string, currentObject?: stri
                 return {
                     object: parsedResponse.object,
                     answer: parsedResponse.answer,
-                    success: true
+                    success: true,
+                    gameStatus: 'ongoing'
                 };
             } else {
                 // Follow-up question response
-                if (!parsedResponse.answer) {
+                if (!parsedResponse.answer || !parsedResponse.gameStatus) {
                     throw new Error('Invalid response format for follow-up question');
                 }
                 return {
                     answer: parsedResponse.answer,
-                    success: true
+                    success: true,
+                    gameStatus: parsedResponse.gameStatus
                 };
             }
         } catch (parseError) {
             return {
                 answer: "Sorry there was an error, please ask your question again.",
                 success: false,
-                error: 'Failed to parse LLM response'
+                error: 'Failed to parse LLM response',
+                gameStatus: 'ongoing'
             };
         }
     } catch (error) {
         return {
             answer: "Sorry there was an error, please ask your question again.",
             success: false,
-            error: error instanceof Error ? error.message : 'Unknown error occurred'
+            error: error instanceof Error ? error.message : 'Unknown error occurred',
+            gameStatus: 'ongoing'
         };
     }
 }; 

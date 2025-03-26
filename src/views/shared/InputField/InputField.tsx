@@ -9,8 +9,8 @@ interface InputFieldProps {
     initialValue?: string;
 }
 
-const isMessageValid = (message: string, disabled: boolean): boolean => 
-    Boolean(message.trim()) && !disabled;
+const isMessageValid = (message: string, disabled: boolean, buttonText: string): boolean => 
+    (buttonText === 'Play Again' || Boolean(message.trim())) && !disabled;
 
 const handleInputChange = (setMessage: (value: string) => void) => 
     (e: React.ChangeEvent<HTMLInputElement>): void => 
@@ -32,7 +32,7 @@ const InputField: React.FC<InputFieldProps> = ({
 
     const handleFormSubmit = (e: React.FormEvent): void => {
         e.preventDefault();
-        if (isMessageValid(message, disabled)) {
+        if (isMessageValid(message, disabled, buttonText)) {
             onSubmit(message.trim());
             setMessage('');
             // Focus the input after submission
@@ -56,7 +56,7 @@ const InputField: React.FC<InputFieldProps> = ({
             />
             <button
                 type="submit"
-                disabled={disabled || !message.trim()}
+                disabled={disabled || (buttonText !== 'Play Again' && !message.trim())}
                 className={styles.submitButton}
             >
                 {buttonText}

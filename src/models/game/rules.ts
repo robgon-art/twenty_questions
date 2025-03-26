@@ -1,7 +1,7 @@
 import { GameState, GameRules } from './types';
 
 export const isGameComplete = (state: GameState): boolean => 
-    state.gameStatus === 'complete';
+    state.gameStatus === 'success' || state.gameStatus === 'failed';
 
 export const canAskQuestion = (state: GameState): boolean => 
     state.gameStatus === 'active' && state.questionsRemaining > 0;

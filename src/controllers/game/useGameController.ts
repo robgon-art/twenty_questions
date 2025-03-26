@@ -21,7 +21,7 @@ export interface GameController {
 const handleGameCompleteEffect = (onGameComplete: (success: boolean) => void) => 
     (state: GameState) => {
         if (isGameComplete(state)) {
-            onGameComplete(false);
+            onGameComplete(state.gameStatus === 'success');
         }
     };
 
@@ -63,6 +63,20 @@ export const useGameController = (
                     // If this is the first question, update the object
                     if (response.object) {
                         newState = updateStateWithObject(response.object)(newState);
+                    }
+
+                    // Update game status based on LLM response and questions remaining
+                    if (response.gameStatus === 'success') {
+                        newState = {
+                            ...newState,
+                            gameStatus: 'success'
+                        };
+                    } else if (newState.questionsRemaining <= 0) {
+                        // If we've exhausted all questions, set to failed
+                        newState = {
+                            ...newState,
+                            gameStatus: 'failed'
+                        };
                     }
                 } else {
                     // Handle error case

@@ -34,7 +34,8 @@ describe('gameService', () => {
         it('should handle follow-up questions correctly', async () => {
             const mockResponse = {
                 message: JSON.stringify({
-                    answer: 'Yes, it is large'
+                    answer: 'Yes, it is large',
+                    gameStatus: 'ongoing'
                 }),
                 success: true
             };
@@ -46,6 +47,7 @@ describe('gameService', () => {
             expect(result.success).toBe(true);
             expect(result.object).toBeUndefined();
             expect(result.answer).toBe('Yes, it is large');
+            expect(result.gameStatus).toBe('ongoing');
             expect(processMessage).toHaveBeenCalledWith(
                 expect.stringContaining('The object is elephant')
             );
