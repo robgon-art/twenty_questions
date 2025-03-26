@@ -1,11 +1,16 @@
 import React from 'react';
 import './App.css';
+import ChatInterface from './components/ChatInterface/ChatInterface';
 
 function App() {
+  const handleAskQuestion = (question: string) => {
+    // TODO: Implement the logic to handle the question
+    console.log('Question asked:', question);
+  };
+
   return (
     <div className="App">
-      <header className="App-header">
-      </header>
+      <ChatInterface onAskQuestion={handleAskQuestion} />
     </div>
   );
 }

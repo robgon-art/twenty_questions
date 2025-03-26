@@ -1,14 +1,34 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styles from './ChatInterface.module.css';
 
 interface ChatInterfaceProps {
-    // We'll add props as we implement the component
+    onAskQuestion: (question: string) => void;
 }
 
-const ChatInterface: React.FC<ChatInterfaceProps> = () => {
+const ChatInterface: React.FC<ChatInterfaceProps> = ({ onAskQuestion }) => {
+    const [question, setQuestion] = useState("Is it an animal, vegetable, or mineral?");
+
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        onAskQuestion(question);
+    };
+
     return (
         <div className={styles.container}>
-            {/* We'll implement the chat interface here */}
+            <h1 className={styles.title}>Twenty Questions</h1>
+            <p className={styles.subtitle}>See if you can guess what I am thinking of.</p>
+            <form onSubmit={handleSubmit} className={styles.questionForm} role="form">
+                <input
+                    type="text"
+                    value={question}
+                    onChange={(e) => setQuestion(e.target.value)}
+                    className={styles.questionInput}
+                    placeholder="Enter your question..."
+                />
+                <button type="submit" className={styles.askButton}>
+                    Ask Question
+                </button>
+            </form>
         </div>
     );
 };
