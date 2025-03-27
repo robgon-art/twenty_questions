@@ -10,11 +10,23 @@ describe('AI Prompt Manager', () => {
     describe('createFirstQuestionPrompt', () => {
         it('should create a prompt with the question and excluded items', () => {
             const question = 'Is it living?';
-            const prompt = createFirstQuestionPrompt(question);
+            const usedObjects: string[] = [];
+            const prompt = createFirstQuestionPrompt(question, usedObjects);
             
             expect(prompt).toContain(MAX_QUESTIONS.toString());
             expect(prompt).toContain(question);
             expect(prompt).toContain(commonTwentyQuestionsItems.join(', '));
+        });
+
+        it('should include previously used objects in the prompt', () => {
+            const question = 'Is it living?';
+            const usedObjects = ['elephant', 'computer'];
+            const prompt = createFirstQuestionPrompt(question, usedObjects);
+            
+            expect(prompt).toContain(MAX_QUESTIONS.toString());
+            expect(prompt).toContain(question);
+            expect(prompt).toContain(commonTwentyQuestionsItems.join(', '));
+            expect(prompt).toContain(usedObjects.join(', '));
         });
     });
 

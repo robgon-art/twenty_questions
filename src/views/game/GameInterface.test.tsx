@@ -24,6 +24,7 @@ describe('GameInterface', () => {
         currentObject: undefined,
         gameStatus: 'active',
         questionsRemaining: MAX_QUESTIONS,
+        usedObjects: [],
         ...overrides
     });
 

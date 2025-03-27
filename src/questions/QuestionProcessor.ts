@@ -2,11 +2,15 @@ import { GameResponse } from '../types';
 import { createFirstQuestionPrompt, createFollowUpQuestionPrompt } from '../ai-prompts/ai-prompts';
 import { processMessage } from '../communication/GameApiClient';
 
-export const processGameQuestion = async (question: string, currentObject?: string): Promise<GameResponse> => {
+export const processGameQuestion = async (
+    question: string, 
+    currentObject?: string,
+    usedObjects: string[] = []
+): Promise<GameResponse> => {
     try {
         const prompt = currentObject 
             ? createFollowUpQuestionPrompt(currentObject, question)
-            : createFirstQuestionPrompt(question);
+            : createFirstQuestionPrompt(question, usedObjects);
 
         const response = await processMessage(prompt);
         

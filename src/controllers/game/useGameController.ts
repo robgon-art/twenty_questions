@@ -4,6 +4,7 @@ import {
     createInitialState,
     addQuestion,
     updateAnswer,
+    updateObject,
     resetGame
 } from '../../models/game/state';
 import { isGameComplete } from '../../models/game/rules';
@@ -32,10 +33,7 @@ const updateStateWithAnswer = (answer: string) =>
     (state: GameState): GameState => updateAnswer(state, answer);
 
 const updateStateWithObject = (object: string) =>
-    (state: GameState): GameState => ({
-        ...state,
-        currentObject: object
-    });
+    (state: GameState): GameState => updateObject(state, object);
 
 const resetGameState = () => 
     (): GameState => resetGame();
@@ -47,7 +45,11 @@ export const useGameController = (
 
     const handleQuestion = useCallback(async (question: string) => {
         try {
-            const response = await processGameQuestion(question, state.currentObject);
+            const response = await processGameQuestion(
+                question, 
+                state.currentObject,
+                state.usedObjects
+            );
             
             setState(prevState => {
                 let newState = prevState;
@@ -95,7 +97,7 @@ export const useGameController = (
                 return newState;
             });
         }
-    }, [onGameComplete, state.currentObject]);
+    }, [onGameComplete, state.currentObject, state.usedObjects]);
 
     const handleAnswer = useCallback((answer: string) => {
         setState(updateStateWithAnswer(answer));

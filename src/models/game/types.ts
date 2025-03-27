@@ -12,6 +12,7 @@ export interface GameState {
     currentObject?: string;  // The object being guessed
     gameStatus: GameStatus;
     questionsRemaining: number;
+    usedObjects: string[];  // Track objects that have been used in previous games
 }
 
 export interface GameRules {

@@ -21,13 +21,17 @@ const updateQuestions = (questions: Question[], newQuestion: Question): Question
 const updateGameStatus = (remaining: number): 'active' | 'failed' => 
     shouldCompleteGame(remaining) ? 'failed' : 'active';
 
+const addUsedObject = (usedObjects: string[], newObject: string): string[] => 
+    usedObjects.includes(newObject) ? usedObjects : [...usedObjects, newObject];
+
 // Main state transformation functions
 export const createInitialState = (rules: GameRules = DEFAULT_RULES): GameState => ({
     questions: [],
     currentAnswer: '',
     currentObject: undefined,
     gameStatus: 'active',
-    questionsRemaining: rules.maxQuestions
+    questionsRemaining: rules.maxQuestions,
+    usedObjects: []
 });
 
 export const addQuestion = (state: GameState, questionText: string): GameState => {
@@ -52,7 +56,8 @@ export const updateAnswer = (state: GameState, answer: string): GameState => ({
 
 export const updateObject = (state: GameState, object: string): GameState => ({
     ...state,
-    currentObject: object
+    currentObject: object,
+    usedObjects: addUsedObject(state.usedObjects, object)
 });
 
 export const completeGame = (state: GameState, success: boolean): GameState => ({
