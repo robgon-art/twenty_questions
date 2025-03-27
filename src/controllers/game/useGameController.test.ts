@@ -1,10 +1,10 @@
 import { renderHook, act } from '@testing-library/react';
 import { useGameController } from './useGameController';
-import { processGameQuestion } from '../../services/gameService';
+import { processGameQuestion } from '../../questions/QuestionProcessor';
 import { MAX_QUESTIONS } from '../../constants';
 
-// Mock the game service
-jest.mock('../../services/gameService');
+// Mock the question processor
+jest.mock('../../questions/QuestionProcessor');
 
 describe('useGameController', () => {
     const mockOnGameComplete = jest.fn();

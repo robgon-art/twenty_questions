@@ -1,25 +1,12 @@
-import { processMessage } from './apiService';
-import { MAX_QUESTIONS } from '../constants';
-
-export interface GameResponse {
-    object?: string;
-    answer: string;
-    success: boolean;
-    error?: string;
-    gameStatus: 'ongoing' | 'success';
-}
-
-const FIRST_QUESTION_PROMPT = (question: string) => 
-    `We are playing ${MAX_QUESTIONS} questions. Think of a common, well-known thing and answer this first question: ${question}. Return a JSON string with an "object" and "answer" strings.`;
-
-const FOLLOW_UP_QUESTION_PROMPT = (object: string, question: string) =>
-    `We are playing ${MAX_QUESTIONS} questions. The object is ${object}. Answer the ${question}. Return a JSON string with an "answer" string and a "gameStatus" field that is either "ongoing" or "success" based on whether the player has correctly guessed the object.`;
+import { GameResponse } from '../types';
+import { createFirstQuestionPrompt, createFollowUpQuestionPrompt } from '../rules/GameRules';
+import { processMessage } from '../communication/GameApiClient';
 
 export const processGameQuestion = async (question: string, currentObject?: string): Promise<GameResponse> => {
     try {
         const prompt = currentObject 
-            ? FOLLOW_UP_QUESTION_PROMPT(currentObject, question)
-            : FIRST_QUESTION_PROMPT(question);
+            ? createFollowUpQuestionPrompt(currentObject, question)
+            : createFirstQuestionPrompt(question);
 
         const response = await processMessage(prompt);
         

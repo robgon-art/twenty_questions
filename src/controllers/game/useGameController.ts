@@ -7,7 +7,7 @@ import {
     resetGame
 } from '../../models/game/state';
 import { isGameComplete } from '../../models/game/rules';
-import { processGameQuestion } from '../../services/gameService';
+import { processGameQuestion } from '../../questions/QuestionProcessor';
 
 export interface GameController {
     state: GameState;
