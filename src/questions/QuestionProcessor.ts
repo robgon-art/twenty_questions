@@ -1,5 +1,5 @@
 import { GameResponse } from '../types';
-import { createFirstQuestionPrompt, createFollowUpQuestionPrompt } from '../rules/GameRules';
+import { createFirstQuestionPrompt, createFollowUpQuestionPrompt } from '../rules/AIPromptManager';
 import { processMessage } from '../communication/GameApiClient';
 
 export const processGameQuestion = async (question: string, currentObject?: string): Promise<GameResponse> => {

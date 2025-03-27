@@ -3,15 +3,22 @@ import {
     createFollowUpQuestionPrompt,
     validateFirstQuestionResponse,
     validateFollowUpQuestionResponse
-} from './GameRules';
-import { MAX_QUESTIONS } from '../constants';
+} from './AIPromptManager';
+import { MAX_QUESTIONS, commonTwentyQuestionsItems } from '../constants';
 
-describe('GameRules', () => {
+describe('AIPromptManager', () => {
     describe('createFirstQuestionPrompt', () => {
         it('should create correct prompt for first question', () => {
             const question = 'Is it an animal?';
             const prompt = createFirstQuestionPrompt(question);
-            expect(prompt).toBe(`We are playing ${MAX_QUESTIONS} questions. Think of a common, well-known thing and answer this first question: ${question}. Return a JSON string with an "object" and "answer" strings.`);
+            expect(prompt).toBe(`We are playing ${MAX_QUESTIONS} questions. Think of a common, well-known thing and answer this first question: ${question}. Please avoid these common items: ${commonTwentyQuestionsItems.join(', ')}. Return a JSON string with an "object" and "answer" strings.`);
+        });
+
+        it('should include list of common items to avoid', () => {
+            const question = 'Is it an animal?';
+            const prompt = createFirstQuestionPrompt(question);
+            expect(prompt).toContain('Please avoid these common items:');
+            expect(prompt).toContain(commonTwentyQuestionsItems.join(', '));
         });
     });
 
