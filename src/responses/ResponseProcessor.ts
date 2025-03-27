@@ -1,5 +1,5 @@
 import { GameResponse } from '../types';
-import { validateFirstQuestionResponse, validateFollowUpQuestionResponse } from '../rules/AIPromptManager';
+import { validateFirstQuestionResponse, validateFollowUpQuestionResponse } from '../ai-prompts/ai-prompts';
 
 export const processResponse = (response: string, currentObject?: string): GameResponse => {
     try {
