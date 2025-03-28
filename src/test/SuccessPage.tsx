@@ -1,4 +1,5 @@
 import React from 'react';
+import ConfettiEffect from '../effects/ConfettiEffect';
 
 const SuccessPage: React.FC = () => {
     return (
@@ -7,9 +8,15 @@ const SuccessPage: React.FC = () => {
             minHeight: '100vh',
             display: 'flex',
             justifyContent: 'center',
-            alignItems: 'center'
+            alignItems: 'center',
+            position: 'relative'
         }}>
-            <h1 style={{ fontWeight: 'bold' }}>Success</h1>
+            <ConfettiEffect />
+            <h1 style={{ 
+                fontWeight: 'bold',
+                position: 'relative',
+                zIndex: 1
+            }}>Success</h1>
         </div>
     );
 };
