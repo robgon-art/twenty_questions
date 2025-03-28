@@ -17,14 +17,6 @@ export interface GameController {
     startNewGame: () => void;
 }
 
-// Side effect handlers
-const handleGameCompleteEffect = (onGameComplete: (success: boolean) => void) => 
-    (state: GameState) => {
-        if (isGameComplete(state)) {
-            onGameComplete(state.gameStatus === 'success');
-        }
-    };
-
 // State update handlers
 const updateStateWithQuestion = (question: string) => 
     (state: GameState): GameState => addQuestion(state, question);
@@ -38,9 +30,7 @@ const updateStateWithObject = (object: string) =>
 const resetGameState = () => 
     (): GameState => resetGame();
 
-export const useGameController = (
-    onGameComplete: (success: boolean) => void
-): GameController => {
+export const useGameController = (): GameController => {
     const [state, setState] = useState<GameState>(createInitialState());
 
     const handleQuestion = useCallback(async (question: string) => {
@@ -85,7 +75,6 @@ export const useGameController = (
                     newState = updateStateWithQuestion(question)(newState);
                 }
                 
-                handleGameCompleteEffect(onGameComplete)(newState);
                 return newState;
             });
         } catch (error) {
@@ -93,11 +82,10 @@ export const useGameController = (
                 const errorMessage = "Sorry there was an error, please ask your question again.";
                 let newState = updateStateWithAnswer(errorMessage)(prevState);
                 newState = updateStateWithQuestion(question)(newState);
-                handleGameCompleteEffect(onGameComplete)(newState);
                 return newState;
             });
         }
-    }, [onGameComplete, state.currentObject, state.usedObjects]);
+    }, [state.currentObject, state.usedObjects]);
 
     const handleAnswer = useCallback((answer: string) => {
         setState(updateStateWithAnswer(answer));

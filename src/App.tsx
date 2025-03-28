@@ -1,24 +1,30 @@
 import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './App.css';
 import GameInterface from './views/game/GameInterface';
+import SuccessPage from './test/SuccessPage';
+import FailurePage from './test/FailurePage';
 import { useGameController } from './controllers/game/useGameController';
 
 const App: React.FC = () => {
-  const handleGameComplete = (success: boolean) => {
-    // TODO: Handle game completion (e.g., show message, reset game)
-    console.log('Game completed:', success ? 'success' : 'failure');
-  };
-
-  const { state, handleQuestion, startNewGame } = useGameController(handleGameComplete);
+  const { state, handleQuestion, startNewGame } = useGameController();
 
   return (
-    <div className="App">
-      <GameInterface 
-        gameState={state}
-        onAskQuestion={handleQuestion}
-        onStartNewGame={startNewGame}
-      />
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={
+          <div className="App">
+            <GameInterface 
+              gameState={state}
+              onAskQuestion={handleQuestion}
+              onStartNewGame={startNewGame}
+            />
+          </div>
+        } />
+        <Route path="/success" element={<SuccessPage />} />
+        <Route path="/failure" element={<FailurePage />} />
+      </Routes>
+    </Router>
   );
 };
 

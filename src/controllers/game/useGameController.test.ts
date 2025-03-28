@@ -7,14 +7,12 @@ import { MAX_QUESTIONS } from '../../constants';
 jest.mock('../../questions/QuestionProcessor');
 
 describe('useGameController', () => {
-    const mockOnGameComplete = jest.fn();
-
     beforeEach(() => {
         jest.clearAllMocks();
     });
 
     it('should initialize with active game state', () => {
-        const { result } = renderHook(() => useGameController(mockOnGameComplete));
+        const { result } = renderHook(() => useGameController());
         
         expect(result.current.state.gameStatus).toBe('active');
         expect(result.current.state.questionsRemaining).toBe(MAX_QUESTIONS);
@@ -30,7 +28,7 @@ describe('useGameController', () => {
         };
         (processGameQuestion as jest.Mock).mockResolvedValue(mockResponse);
 
-        const { result } = renderHook(() => useGameController(mockOnGameComplete));
+        const { result } = renderHook(() => useGameController());
 
         await act(async () => {
             await result.current.handleQuestion('Is it an animal?');
@@ -50,14 +48,13 @@ describe('useGameController', () => {
         };
         (processGameQuestion as jest.Mock).mockResolvedValue(mockResponse);
 
-        const { result } = renderHook(() => useGameController(mockOnGameComplete));
+        const { result } = renderHook(() => useGameController());
 
         await act(async () => {
             await result.current.handleQuestion('Is it an apple?');
         });
 
         expect(result.current.state.gameStatus).toBe('success');
-        expect(mockOnGameComplete).toHaveBeenCalledWith(true);
     });
 
     it('should handle game failure when questions run out', async () => {
@@ -68,7 +65,7 @@ describe('useGameController', () => {
         };
         (processGameQuestion as jest.Mock).mockResolvedValue(mockResponse);
 
-        const { result } = renderHook(() => useGameController(mockOnGameComplete));
+        const { result } = renderHook(() => useGameController());
         
         // Ask all questions to exhaust the limit
         for (let i = 0; i < MAX_QUESTIONS; i++) {
@@ -91,7 +88,7 @@ describe('useGameController', () => {
         };
         (processGameQuestion as jest.Mock).mockResolvedValue(mockResponse);
 
-        const { result } = renderHook(() => useGameController(mockOnGameComplete));
+        const { result } = renderHook(() => useGameController());
 
         await act(async () => {
             await result.current.handleQuestion('Is it an animal?');
@@ -101,7 +98,7 @@ describe('useGameController', () => {
     });
 
     it('should reset game state when starting new game', async () => {
-        const { result } = renderHook(() => useGameController(mockOnGameComplete));
+        const { result } = renderHook(() => useGameController());
 
         // Modify state first
         await act(async () => {
