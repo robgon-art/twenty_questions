@@ -30,8 +30,8 @@
 
 .input:disabled {
     background-color: #e9ecef;
-    cursor: not-allowed;
     color: #000000;
+    cursor: default;
 }
 
 .submitButton {

@@ -7,6 +7,7 @@ interface InputFieldProps {
     disabled?: boolean;
     buttonText?: string;
     initialValue?: string;
+    focus?: boolean;
 }
 
 const InputField: React.FC<InputFieldProps> = ({
@@ -14,7 +15,8 @@ const InputField: React.FC<InputFieldProps> = ({
     placeholder = 'Type your message...',
     disabled = false,
     buttonText = 'Send',
-    initialValue = ''
+    initialValue = '',
+    focus = false
 }) => {
     const [message, setMessage] = useState(initialValue);
     const inputRef = useRef<HTMLInputElement>(null);
@@ -26,9 +28,12 @@ const InputField: React.FC<InputFieldProps> = ({
         }
     }, [initialValue]);
 
+    // Focus on mount and when focus prop changes
     useEffect(() => {
-        inputRef.current?.focus();
-    }, []);
+        if (focus && !disabled) {
+            inputRef.current?.focus();
+        }
+    }, [focus, disabled]);
 
     const handleFormSubmit = (e: React.FormEvent): void => {
         e.preventDefault();
@@ -41,8 +46,6 @@ const InputField: React.FC<InputFieldProps> = ({
             } else {
                 setMessage('');
             }
-            // Focus the input after submission
-            setTimeout(() => inputRef.current?.focus(), 0);
         }
     };
 

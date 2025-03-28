@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styles from './GameInterface.module.css';
 import InputField from '../shared/InputField/InputField';
 import { GameState } from '../../models/game/types';
@@ -58,6 +58,7 @@ const GameInterface: React.FC<GameInterfaceProps> = ({
     onStartNewGame 
 }) => {
     const [isLoading, setIsLoading] = useState(false);
+    const [shouldFocus, setShouldFocus] = useState(false);
 
     const handleSubmit = async (message: string) => {
         // If game is not active, start a new game instead of asking a question
@@ -69,10 +70,19 @@ const GameInterface: React.FC<GameInterfaceProps> = ({
         setIsLoading(true);
         try {
             await onAskQuestion(message);
+            // Set focus after the question is answered
+            setShouldFocus(true);
         } finally {
             setIsLoading(false);
         }
     };
+
+    // Reset focus state after it's been applied
+    useEffect(() => {
+        if (shouldFocus) {
+            setShouldFocus(false);
+        }
+    }, [shouldFocus]);
 
     // Determine button text based on game state
     const buttonText = isLoading 
@@ -95,6 +105,7 @@ const GameInterface: React.FC<GameInterfaceProps> = ({
                 disabled={isLoading}
                 buttonText={buttonText}
                 initialValue="Is it an animal, mineral, or vegetable?"
+                focus={shouldFocus}
             />
             <QuestionList questions={gameState.questions} />
         </div>
