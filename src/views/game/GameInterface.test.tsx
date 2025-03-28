@@ -38,10 +38,10 @@ describe('GameInterface', () => {
 
         // Use a more flexible text matcher for the title
         expect(screen.getByText((content, element) => {
-            return (element?.tagName.toLowerCase() === 'h1') && 
-                   (element.textContent?.includes('Twenty Questions') ?? false);
+            return (element?.tagName.toLowerCase() === 'h1') &&
+                (element.textContent?.includes('Twenty Questions') ?? false);
         })).toBeInTheDocument();
-        
+
         expect(screen.getByText(`See if you can guess what I am thinking of. Remaining questions: ${MAX_QUESTIONS}`)).toBeInTheDocument();
         expect(screen.getByPlaceholderText('Type your question...')).toBeInTheDocument();
         expect(screen.getByText('Ask Question')).toBeInTheDocument();
@@ -65,7 +65,7 @@ describe('GameInterface', () => {
     it('shows loading state while processing question', async () => {
         const gameState = createGameState();
         mockOnAskQuestion.mockImplementation(() => new Promise(resolve => setTimeout(resolve, 100)));
-        
+
         render(<GameInterface onAskQuestion={mockOnAskQuestion} gameState={gameState} onStartNewGame={mockOnStartNewGame} />);
 
         const input = screen.getByPlaceholderText('Type your question...');
@@ -91,8 +91,22 @@ describe('GameInterface', () => {
 
         render(<GameInterface onAskQuestion={mockOnAskQuestion} gameState={gameState} onStartNewGame={mockOnStartNewGame} />);
 
-        expect(screen.getByText('2. Is it large? No')).toBeInTheDocument();
-        expect(screen.getByText('1. Is it an animal? Yes')).toBeInTheDocument();
+        // Check for questions and answers using a more specific selector
+        const questionElements = screen.getAllByText((content, element) => {
+            return Boolean(element?.classList.contains('questionText') &&
+                element.textContent?.includes('2. Is it large?'));
+        });
+        expect(questionElements.length).toBe(1);
+
+        expect(screen.getByText('No')).toBeInTheDocument();
+
+        const firstQuestionElements = screen.getAllByText((content, element) => {
+            return Boolean(element?.classList.contains('questionText') &&
+                element.textContent?.includes('1. Is it an animal?'));
+        });
+        expect(firstQuestionElements.length).toBe(1);
+
+        expect(screen.getByText('Yes')).toBeInTheDocument();
     });
 
     it('shows success state correctly', () => {

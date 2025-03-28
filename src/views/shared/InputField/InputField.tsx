@@ -8,6 +8,7 @@ interface InputFieldProps {
     buttonText?: string;
     initialValue?: string;
     focus?: boolean;
+    disabledQuestion?: string;
 }
 
 const InputField: React.FC<InputFieldProps> = ({
@@ -16,7 +17,8 @@ const InputField: React.FC<InputFieldProps> = ({
     disabled = false,
     buttonText = 'Send',
     initialValue = '',
-    focus = false
+    focus = false,
+    disabledQuestion
 }) => {
     const [message, setMessage] = useState(initialValue);
     const inputRef = useRef<HTMLInputElement>(null);
@@ -64,11 +66,11 @@ const InputField: React.FC<InputFieldProps> = ({
             <input
                 ref={inputRef}
                 type="text"
-                value={message}
+                value={disabled ? disabledQuestion || message : message}
                 onChange={(e) => setMessage(e.target.value)}
                 placeholder={placeholder}
                 disabled={disabled}
-                className={styles.input}
+                className={`${styles.input} ${disabled ? styles.disabled : ''}`}
             />
             <button
                 type="submit"

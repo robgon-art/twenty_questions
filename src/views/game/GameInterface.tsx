@@ -40,7 +40,10 @@ const GameHeader: React.FC<{
 
 const QuestionItem: React.FC<{ question: GameState['questions'][0], index: number }> = ({ question, index }) => (
     <div className={styles.questionItem}>
-        <p className={styles.questionText}>{index + 1}. {question.text} {question.answer}</p>
+        <p className={styles.questionText}>
+            {index + 1}. {question.text}
+            <span className={styles.answerText}>{question.answer}</span>
+        </p>
     </div>
 );
 
@@ -59,6 +62,7 @@ const GameInterface: React.FC<GameInterfaceProps> = ({
 }) => {
     const [isLoading, setIsLoading] = useState(false);
     const [shouldFocus, setShouldFocus] = useState(false);
+    const [currentQuestion, setCurrentQuestion] = useState<string | undefined>();
 
     const handleSubmit = async (message: string) => {
         // If game is not active, start a new game instead of asking a question
@@ -68,12 +72,14 @@ const GameInterface: React.FC<GameInterfaceProps> = ({
         }
 
         setIsLoading(true);
+        setCurrentQuestion(message);
         try {
             await onAskQuestion(message);
             // Set focus after the question is answered
             setShouldFocus(true);
         } finally {
             setIsLoading(false);
+            setCurrentQuestion(undefined);
         }
     };
 
@@ -106,6 +112,7 @@ const GameInterface: React.FC<GameInterfaceProps> = ({
                 buttonText={buttonText}
                 initialValue="Is it an animal, mineral, or vegetable?"
                 focus={shouldFocus}
+                disabledQuestion={currentQuestion}
             />
             <QuestionList questions={gameState.questions} />
         </div>
