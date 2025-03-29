@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, act, RenderResult } from '@testing-library/react';
 import InputField from './InputField';
 
 describe('InputField', () => {
@@ -8,16 +8,19 @@ describe('InputField', () => {
         const handleSubmit = (message: string) => {
             lastSubmittedMessage = message;
         };
-        
-        const result = render(
-            <InputField 
-                onSubmit={handleSubmit} 
-                {...props} 
-            />
-        );
-        
+
+        let result: RenderResult = render(<div />); // Initialize with a default value
+        act(() => {
+            result = render(
+                <InputField
+                    onSubmit={handleSubmit}
+                    {...props}
+                />
+            );
+        });
+
         const placeholder = props.placeholder || 'Type your message...';
-        
+
         return {
             ...result,
             getLastSubmittedMessage: () => lastSubmittedMessage,
@@ -28,7 +31,7 @@ describe('InputField', () => {
 
     it('renders with default props', () => {
         const { input, submitButton } = renderInputField();
-        
+
         expect(input).toBeInTheDocument();
         expect(submitButton).toBeInTheDocument();
         expect(input).toBeEnabled();
@@ -37,7 +40,7 @@ describe('InputField', () => {
 
     it('submits valid messages and clears input', () => {
         const { input, submitButton, getLastSubmittedMessage } = renderInputField();
-        
+
         fireEvent.change(input, { target: { value: 'Hello, World!' } });
         expect(submitButton).toBeEnabled(); // Button should be enabled when there's input
         fireEvent.click(submitButton);
@@ -49,7 +52,7 @@ describe('InputField', () => {
 
     it('prevents submission of empty messages', () => {
         const { submitButton, getLastSubmittedMessage } = renderInputField();
-        
+
         fireEvent.click(submitButton);
 
         expect(getLastSubmittedMessage()).toBeNull();
@@ -57,7 +60,7 @@ describe('InputField', () => {
 
     it('handles disabled state correctly', () => {
         const { input, submitButton } = renderInputField({ disabled: true });
-        
+
         expect(input).toBeDisabled();
         expect(submitButton).toBeDisabled();
     });
@@ -65,7 +68,7 @@ describe('InputField', () => {
     it('accepts custom placeholder text', () => {
         const customPlaceholder = 'Enter your question...';
         const { input } = renderInputField({ placeholder: customPlaceholder });
-        
+
         expect(input).toHaveAttribute('placeholder', customPlaceholder);
     });
 });

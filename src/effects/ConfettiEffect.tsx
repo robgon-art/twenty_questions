@@ -138,16 +138,21 @@ const ConfettiEffect: React.FC = () => {
                 },
                 emitters: {
                     life: {
-                        count: 0,
-                        duration: 0.1,
-                        delay: 0.4
+                        count: 1,
+                        duration: 5,
+                        delay: 0
                     },
                     rate: {
-                        delay: 0.1,
-                        quantity: 150
+                        delay: 0.5,
+                        quantity: 50
+                    },
+                    position: {
+                        x: 50,
+                        y: 30,
+                        random: true
                     },
                     size: {
-                        width: 0,
+                        width: 100,
                         height: 0
                     }
                 }

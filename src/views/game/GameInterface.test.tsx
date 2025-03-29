@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
 import GameInterface from './GameInterface';
 import { GameState } from '../../models/game/types';
 import { MAX_QUESTIONS } from '../../constants';
@@ -34,7 +34,9 @@ describe('GameInterface', () => {
 
     it('renders initial game state correctly', () => {
         const gameState = createGameState();
-        render(<GameInterface onAskQuestion={mockOnAskQuestion} gameState={gameState} onStartNewGame={mockOnStartNewGame} />);
+        act(() => {
+            render(<GameInterface onAskQuestion={mockOnAskQuestion} gameState={gameState} onStartNewGame={mockOnStartNewGame} />);
+        });
 
         // Use a more flexible text matcher for the title
         expect(screen.getByText((content, element) => {
