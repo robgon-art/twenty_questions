@@ -23,29 +23,33 @@ const RainEffect: React.FC = () => {
                     zIndex: 1
                 },
                 particles: {
-                    number: {
-                        value: 100,
-                        density: {
-                            enable: true,
-                            value_area: 800
-                        }
-                    },
                     color: {
-                        value: "#0066cc"
+                        value: "#00aaff"
                     },
                     shape: {
-                        type: "circle"
+                        type: "char",
+                        options: {
+                            char: {
+                                value: "|",
+                                font: "Verdana",
+                                style: "",
+                                weight: "bold",
+                            }
+                        }
                     },
                     opacity: {
-                        value: 0.6
+                        value: 0.7
                     },
                     size: {
-                        value: 4,
+                        value: 16, // visually longer
                         random: false
                     },
                     move: {
                         enable: true,
-                        speed: 15,
+                        speed: {
+                            min: 23,
+                            max: 27
+                        },
                         direction: "bottom",
                         straight: true,
                         outModes: {
@@ -59,11 +63,11 @@ const RainEffect: React.FC = () => {
                         y: 0
                     },
                     rate: {
-                        delay: 0.1,
-                        quantity: 2
+                        delay: 0.03,
+                        quantity: 4
                     },
                     size: {
-                        width: 100,
+                        width: 1000,
                         height: 0
                     }
                 }
@@ -72,4 +76,4 @@ const RainEffect: React.FC = () => {
     );
 };
 
-export default RainEffect; 
+export default RainEffect;
