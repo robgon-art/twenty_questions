@@ -4,6 +4,7 @@ import { GameResponse } from '../types';
 export const createFirstQuestionPrompt = (question: string, usedObjects: string[]): string =>
     `We are playing ${MAX_QUESTIONS} questions. 
 Think of a common, well-known thing and answer this first question: ${question}. 
+Be creative when choosing an object, but don't make it too obscure.
 Please avoid these common items: ${commonTwentyQuestionsItems.join(', ')}. 
 Also avoid these previously used items: ${usedObjects.join(', ')}. 
 Return a JSON string with an "object" and "answer" strings.`;

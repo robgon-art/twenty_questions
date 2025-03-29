@@ -70,17 +70,19 @@ const GameInterface: React.FC<GameInterfaceProps> = ({
     const [isLoading, setIsLoading] = useState(false);
     const [shouldFocus, setShouldFocus] = useState(false);
     const [currentQuestion, setCurrentQuestion] = useState<string | undefined>();
-    const [showRain, setShowRain] = useState(false);
+    const [showEffects, setShowEffects] = useState(false);
 
-    // Handle rain effect timing
+    // Handle effect timing
     useEffect(() => {
-        if (gameState.gameStatus === 'failed') {
-            setShowRain(true);
+        if (gameState.gameStatus === 'success' || gameState.gameStatus === 'failed') {
+            setShowEffects(true);
             const timer = setTimeout(() => {
-                setShowRain(false);
+                setShowEffects(false);
             }, 10000); // 10 seconds
 
             return () => clearTimeout(timer);
+        } else {
+            setShowEffects(false);
         }
     }, [gameState.gameStatus]);
 
@@ -125,8 +127,8 @@ const GameInterface: React.FC<GameInterfaceProps> = ({
     return (
         <div className={styles.container} style={{ position: 'relative' }}>
             <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: 1 }}>
-                {gameState.gameStatus === 'success' && <ConfettiEffect />}
-                {showRain && <RainEffect />}
+                {showEffects && gameState.gameStatus === 'success' && <ConfettiEffect />}
+                {showEffects && gameState.gameStatus === 'failed' && <RainEffect />}
             </div>
             <div style={{ position: 'relative', zIndex: 2 }}>
                 <GameHeader remaining={getQuestionsRemaining(gameState)} gameState={gameState} />
