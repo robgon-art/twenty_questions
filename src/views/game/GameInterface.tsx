@@ -139,7 +139,7 @@ const GameInterface: React.FC<GameInterfaceProps> = ({
                     focus={shouldFocus}
                     disabledQuestion={currentQuestion}
                 />
-                <QuestionList questions={gameState.questions} />
+                {gameState.questions.length > 0 && <QuestionList questions={gameState.questions} />}
             </div>
         </div>
     );
