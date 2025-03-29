@@ -5,6 +5,7 @@ import { GameState } from '../../models/game/types';
 import { getQuestionsRemaining } from '../../models/game/rules';
 import { MAX_QUESTIONS } from '../../constants';
 import { toWords } from 'number-to-words';
+import ConfettiEffect from '../../effects/ConfettiEffect';
 
 interface GameInterfaceProps {
     onAskQuestion: (question: string) => Promise<void>;
@@ -104,6 +105,7 @@ const GameInterface: React.FC<GameInterfaceProps> = ({
 
     return (
         <div className={styles.container}>
+            {gameState.gameStatus === 'success' && <ConfettiEffect />}
             <GameHeader remaining={getQuestionsRemaining(gameState)} gameState={gameState} />
             <InputField
                 onSubmit={handleSubmit}
