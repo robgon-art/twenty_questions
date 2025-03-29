@@ -6,6 +6,7 @@ import { getQuestionsRemaining } from '../../models/game/rules';
 import { MAX_QUESTIONS } from '../../constants';
 import { toWords } from 'number-to-words';
 import ConfettiEffect from '../../effects/ConfettiEffect';
+import RainEffect from '../../effects/RainEffect';
 
 interface GameInterfaceProps {
     onAskQuestion: (question: string) => Promise<void>;
@@ -64,6 +65,19 @@ const GameInterface: React.FC<GameInterfaceProps> = ({
     const [isLoading, setIsLoading] = useState(false);
     const [shouldFocus, setShouldFocus] = useState(false);
     const [currentQuestion, setCurrentQuestion] = useState<string | undefined>();
+    const [showRain, setShowRain] = useState(false);
+
+    // Handle rain effect timing
+    useEffect(() => {
+        if (gameState.gameStatus === 'failed') {
+            setShowRain(true);
+            const timer = setTimeout(() => {
+                setShowRain(false);
+            }, 10000); // 10 seconds
+
+            return () => clearTimeout(timer);
+        }
+    }, [gameState.gameStatus]);
 
     const handleSubmit = async (message: string) => {
         // If game is not active, start a new game instead of asking a question
@@ -106,6 +120,7 @@ const GameInterface: React.FC<GameInterfaceProps> = ({
     return (
         <div className={styles.container}>
             {gameState.gameStatus === 'success' && <ConfettiEffect />}
+            {showRain && <RainEffect />}
             <GameHeader remaining={getQuestionsRemaining(gameState)} gameState={gameState} />
             <InputField
                 onSubmit={handleSubmit}

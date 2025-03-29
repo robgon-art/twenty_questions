@@ -53,7 +53,7 @@ const RainEffect: React.FC = () => {
                         direction: "bottom",
                         straight: true,
                         outModes: {
-                            default: "out"
+                            default: "destroy"
                         }
                     }
                 },
@@ -64,7 +64,7 @@ const RainEffect: React.FC = () => {
                     },
                     rate: {
                         delay: 0.03,
-                        quantity: 4
+                        quantity: 16
                     },
                     size: {
                         width: 1000,
