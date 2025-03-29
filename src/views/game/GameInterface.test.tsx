@@ -132,7 +132,10 @@ describe('GameInterface', () => {
 
         render(<GameInterface onAskQuestion={mockOnAskQuestion} gameState={gameState} onStartNewGame={mockOnStartNewGame} />);
 
-        expect(screen.getByText('You lose. 😢 The answer was elephant.')).toBeInTheDocument();
+        expect(screen.getByText((content, element) => {
+            return Boolean(element?.classList.contains('subtitle') && 
+                element.textContent?.includes('You lose. 😢 The answer was elephant'));
+        })).toBeInTheDocument();
         expect(screen.getByText('Play Again')).toBeInTheDocument();
         expect(screen.getByPlaceholderText('Click Play Again to start over')).toBeInTheDocument();
     });

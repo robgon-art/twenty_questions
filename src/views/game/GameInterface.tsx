@@ -49,7 +49,7 @@ const QuestionItem: React.FC<{ question: GameState['questions'][0], index: numbe
     <div className={styles.questionItem}>
         <p className={styles.questionText}>
             {index + 1}. {question.text}
-            <span className={styles.answerText}>{question.answer}</span>
+            {index > 0 && <span className={styles.answerText}>{question.answer}</span>}
         </p>
     </div>
 );
@@ -123,20 +123,24 @@ const GameInterface: React.FC<GameInterfaceProps> = ({
         : "Click Play Again to start over";
 
     return (
-        <div className={styles.container}>
-            {gameState.gameStatus === 'success' && <ConfettiEffect />}
-            {showRain && <RainEffect />}
-            <GameHeader remaining={getQuestionsRemaining(gameState)} gameState={gameState} />
-            <InputField
-                onSubmit={handleSubmit}
-                placeholder={placeholder}
-                disabled={isLoading}
-                buttonText={buttonText}
-                initialValue="Is it an animal, mineral, or vegetable?"
-                focus={shouldFocus}
-                disabledQuestion={currentQuestion}
-            />
-            <QuestionList questions={gameState.questions} />
+        <div className={styles.container} style={{ position: 'relative' }}>
+            <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: 1 }}>
+                {gameState.gameStatus === 'success' && <ConfettiEffect />}
+                {showRain && <RainEffect />}
+            </div>
+            <div style={{ position: 'relative', zIndex: 2 }}>
+                <GameHeader remaining={getQuestionsRemaining(gameState)} gameState={gameState} />
+                <InputField
+                    onSubmit={handleSubmit}
+                    placeholder={placeholder}
+                    disabled={isLoading}
+                    buttonText={buttonText}
+                    initialValue="Is it an animal, mineral, or vegetable?"
+                    focus={shouldFocus}
+                    disabledQuestion={currentQuestion}
+                />
+                <QuestionList questions={gameState.questions} />
+            </div>
         </div>
     );
 };
