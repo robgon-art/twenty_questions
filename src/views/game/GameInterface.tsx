@@ -29,13 +29,18 @@ const GameHeader: React.FC<{
     } else if (gameState.gameStatus === 'success') {
         subtitle = `You win! 🎉 You got it correct in ${MAX_QUESTIONS - gameState.questionsRemaining} questions.`;
     } else {
-        subtitle = `You lose. 😢 The answer was ${gameState.currentObject}.`;
+        subtitle = `You lose. 😢 The answer was `;
     }
 
     return (
         <>
             <h1 className={styles.title}>{capitalize(toWords(MAX_QUESTIONS))} Questions</h1>
-            <p className={styles.subtitle}>{subtitle}</p>
+            <p className={styles.subtitle}>
+                {subtitle}
+                {gameState.gameStatus === 'failed' && (
+                    <span style={{ fontWeight: 'bold', color: '#007bff' }}>{gameState.currentObject}</span>
+                )}
+            </p>
         </>
     );
 };
