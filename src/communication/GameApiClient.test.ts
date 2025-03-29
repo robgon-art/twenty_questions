@@ -58,7 +58,8 @@ describe('GameApiClient', () => {
                         role: "user",
                         content: testMessage
                     }
-                ]
+                ],
+                temperature: 1.5
             });
             expect(result).toEqual({
                 message: mockResponse,

@@ -30,7 +30,13 @@ export const processGameQuestion = async (
             if (!currentObject) {
                 // First question response
                 if (!parsedResponse.object || !parsedResponse.answer) {
-                    throw new Error('Invalid response format for first question');
+                    console.error('Error parsing LLM response:', new Error('Invalid response format for first question'));
+                    return {
+                        answer: "Sorry there was an error, please ask your question again.",
+                        success: false,
+                        error: 'Invalid response format for first question',
+                        gameStatus: 'ongoing'
+                    };
                 }
                 return {
                     object: parsedResponse.object,
@@ -41,7 +47,13 @@ export const processGameQuestion = async (
             } else {
                 // Follow-up question response
                 if (!parsedResponse.answer || !parsedResponse.gameStatus) {
-                    throw new Error('Invalid response format for follow-up question');
+                    console.error('Error parsing LLM response:', new Error('Invalid response format for follow-up question'));
+                    return {
+                        answer: "Sorry there was an error, please ask your question again.",
+                        success: false,
+                        error: 'Invalid response format for follow-up question',
+                        gameStatus: 'ongoing'
+                    };
                 }
                 return {
                     answer: parsedResponse.answer,

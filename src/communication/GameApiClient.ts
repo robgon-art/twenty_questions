@@ -29,6 +29,7 @@ export const processMessage = async (message: string): Promise<ChatResponse> => 
                 role: "user",
                 content: message,
             }],
+            temperature: 1.5
         });
 
         const response = completion.choices[0].message.content;

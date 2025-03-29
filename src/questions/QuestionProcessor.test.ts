@@ -83,4 +83,125 @@ describe('QuestionProcessor', () => {
             gameStatus: 'ongoing'
         });
     });
+
+    it('should handle first question with missing object', async () => {
+        const mockResponse = {
+            success: true,
+            message: JSON.stringify({
+                answer: 'Yes'
+            })
+        };
+        (processMessage as jest.Mock).mockResolvedValue(mockResponse);
+
+        const result = await processGameQuestion('Is it an animal?');
+
+        expect(result).toEqual({
+            answer: "Sorry there was an error, please ask your question again.",
+            success: false,
+            error: 'Invalid response format for first question',
+            gameStatus: 'ongoing'
+        });
+    });
+
+    it('should handle follow-up question with missing answer', async () => {
+        const mockResponse = {
+            success: true,
+            message: JSON.stringify({
+                gameStatus: 'ongoing'
+            })
+        };
+        (processMessage as jest.Mock).mockResolvedValue(mockResponse);
+
+        const result = await processGameQuestion('Is it red?', 'apple');
+
+        expect(result).toEqual({
+            answer: "Sorry there was an error, please ask your question again.",
+            success: false,
+            error: 'Invalid response format for follow-up question',
+            gameStatus: 'ongoing'
+        });
+    });
+
+    it('should handle follow-up question with missing gameStatus', async () => {
+        const mockResponse = {
+            success: true,
+            message: JSON.stringify({
+                answer: 'Yes'
+            })
+        };
+        (processMessage as jest.Mock).mockResolvedValue(mockResponse);
+
+        const result = await processGameQuestion('Is it red?', 'apple');
+
+        expect(result).toEqual({
+            answer: "Sorry there was an error, please ask your question again.",
+            success: false,
+            error: 'Invalid response format for follow-up question',
+            gameStatus: 'ongoing'
+        });
+    });
+
+    it('should handle unexpected error', async () => {
+        (processMessage as jest.Mock).mockRejectedValue(new Error('Unexpected error'));
+
+        const result = await processGameQuestion('Is it an animal?');
+
+        expect(result).toEqual({
+            answer: "Sorry there was an error, please ask your question again.",
+            success: false,
+            error: 'Unexpected error',
+            gameStatus: 'ongoing'
+        });
+    });
+
+    it('should handle non-Error unexpected error', async () => {
+        (processMessage as jest.Mock).mockRejectedValue('String error');
+
+        const result = await processGameQuestion('Is it an animal?');
+
+        expect(result).toEqual({
+            answer: "Sorry there was an error, please ask your question again.",
+            success: false,
+            error: 'Unknown error occurred',
+            gameStatus: 'ongoing'
+        });
+    });
+
+    it('should handle success game status in follow-up question', async () => {
+        const mockResponse = {
+            success: true,
+            message: JSON.stringify({
+                answer: 'Yes',
+                gameStatus: 'success'
+            })
+        };
+        (processMessage as jest.Mock).mockResolvedValue(mockResponse);
+
+        const result = await processGameQuestion('Is it red?', 'apple');
+
+        expect(result).toEqual({
+            answer: 'Yes',
+            success: true,
+            gameStatus: 'success'
+        });
+    });
+
+    it('should handle failed game status in follow-up question', async () => {
+        const mockResponse = {
+            success: true,
+            message: JSON.stringify({
+                answer: 'No',
+                gameStatus: 'failed'
+            })
+        };
+        (processMessage as jest.Mock).mockResolvedValue(mockResponse);
+
+        const result = await processGameQuestion('Is it red?', 'apple');
+
+        expect(result).toEqual({
+            answer: 'No',
+            success: true,
+            gameStatus: 'failed'
+        });
+    });
 }); 
