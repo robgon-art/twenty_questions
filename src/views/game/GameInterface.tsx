@@ -49,7 +49,7 @@ const QuestionItem: React.FC<{ question: GameState['questions'][0], index: numbe
     <div className={styles.questionItem}>
         <p className={styles.questionText}>
             {index + 1}. {question.text}
-            {index > 0 && <span className={styles.answerText}>{question.answer}</span>}
+            {question.answer && <span className={styles.answerText}> {question.answer}</span>}
         </p>
     </div>
 );

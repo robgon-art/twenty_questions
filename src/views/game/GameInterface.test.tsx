@@ -3,6 +3,7 @@ import { render, screen, fireEvent, waitFor, act } from '@testing-library/react'
 import GameInterface from './GameInterface';
 import { GameState } from '../../models/game/types';
 import { MAX_QUESTIONS } from '../../constants';
+import { toWords } from 'number-to-words';
 
 // Mock the CSS module
 jest.mock('./GameInterface.module.css', () => ({
@@ -39,9 +40,10 @@ describe('GameInterface', () => {
         });
 
         // Use a more flexible text matcher for the title
+        const expectedTitle = `${toWords(MAX_QUESTIONS).charAt(0).toUpperCase() + toWords(MAX_QUESTIONS).slice(1)} Questions`;
         expect(screen.getByText((content, element) => {
             return (element?.tagName.toLowerCase() === 'h1') &&
-                (element.textContent?.includes('Twenty Questions') ?? false);
+                (element.textContent?.includes(expectedTitle) ?? false);
         })).toBeInTheDocument();
 
         expect(screen.getByText(`See if you can guess what I am thinking of. Remaining questions: ${MAX_QUESTIONS}`)).toBeInTheDocument();
@@ -108,7 +110,13 @@ describe('GameInterface', () => {
         });
         expect(firstQuestionElements.length).toBe(1);
 
-        expect(screen.getByText('Yes')).toBeInTheDocument();
+        // Check for the answer text within the questionText element
+        const secondQuestionElement = screen.getByText((content, element) => {
+            return Boolean(element?.classList.contains('questionText') &&
+                element.textContent?.includes('2. Is it large?') &&
+                element.textContent?.includes('No'));
+        });
+        expect(secondQuestionElement).toBeInTheDocument();
     });
 
     it('shows success state correctly', () => {
