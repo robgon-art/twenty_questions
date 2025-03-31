@@ -3,7 +3,6 @@ import RainEffect from '../effects/RainEffect';
 
 const FailurePage: React.FC = () => {
     const [opacity, setOpacity] = useState(0);
-    const [showRain, setShowRain] = useState(true);
 
     useEffect(() => {
         // Fade in the rain effect

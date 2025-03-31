@@ -7,8 +7,13 @@ import {
     updateObject,
     resetGame
 } from '../../models/game/state';
-import { isGameComplete } from '../../models/game/rules';
 import { processGameQuestion } from '../../questions/QuestionProcessor';
+
+// Helper function to capitalize first letter
+const capitalizeFirstLetter = (str: string): string => {
+    if (!str) return str;
+    return str.charAt(0).toUpperCase() + str.slice(1);
+};
 
 export interface GameController {
     state: GameState;
@@ -45,8 +50,8 @@ export const useGameController = (): GameController => {
                 let newState = prevState;
                 
                 if (response.success) {
-                    // First update the answer
-                    newState = updateStateWithAnswer(response.answer)(newState);
+                    // First update the answer with capitalized first letter
+                    newState = updateStateWithAnswer(capitalizeFirstLetter(response.answer))(newState);
                     
                     // Then add the question with the current answer
                     newState = updateStateWithQuestion(question)(newState);
@@ -71,7 +76,7 @@ export const useGameController = (): GameController => {
                     }
                 } else {
                     // Handle error case
-                    newState = updateStateWithAnswer(response.answer)(newState);
+                    newState = updateStateWithAnswer(capitalizeFirstLetter(response.answer))(newState);
                     newState = updateStateWithQuestion(question)(newState);
                 }
                 

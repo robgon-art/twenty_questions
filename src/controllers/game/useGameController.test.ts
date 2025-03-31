@@ -22,7 +22,7 @@ describe('useGameController', () => {
     it('should handle first question correctly', async () => {
         const mockResponse = {
             success: true,
-            answer: 'Yes',
+            answer: 'yes',
             object: 'apple',
             gameStatus: 'ongoing' as const
         };
@@ -38,12 +38,13 @@ describe('useGameController', () => {
         expect(result.current.state.questions).toHaveLength(1);
         expect(result.current.state.questionsRemaining).toBe(MAX_QUESTIONS - 1);
         expect(result.current.state.gameStatus).toBe('active');
+        expect(result.current.state.currentAnswer).toBe('Yes');
     });
 
     it('should handle successful game completion', async () => {
         const mockResponse = {
             success: true,
-            answer: 'Yes',
+            answer: 'yes',
             gameStatus: 'success' as const
         };
         (processGameQuestion as jest.Mock).mockResolvedValue(mockResponse);
@@ -55,12 +56,13 @@ describe('useGameController', () => {
         });
 
         expect(result.current.state.gameStatus).toBe('success');
+        expect(result.current.state.currentAnswer).toBe('Yes');
     });
 
     it('should handle game failure when questions run out', async () => {
         const mockResponse = {
             success: true,
-            answer: 'No',
+            answer: 'no',
             gameStatus: 'ongoing' as const
         };
         (processGameQuestion as jest.Mock).mockResolvedValue(mockResponse);
@@ -77,12 +79,13 @@ describe('useGameController', () => {
         // After all questions, status should be failed
         expect(result.current.state.gameStatus).toBe('failed');
         expect(result.current.state.questionsRemaining).toBe(0);
+        expect(result.current.state.currentAnswer).toBe('No');
     });
 
     it('should handle error responses', async () => {
         const mockResponse = {
             success: false,
-            answer: 'Error occurred',
+            answer: 'error occurred',
             error: 'Test error',
             gameStatus: 'ongoing' as const
         };
